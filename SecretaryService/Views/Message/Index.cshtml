@@ -15,9 +15,9 @@
     <span>Найти сообщения, за период</span>
     <span> от </span><input id="dateStart" name="dateStart" type="date" class="form-control" />
     <span> до </span><input id="dateEnd" name="dateEnd" type="date" class="form-control" />
-    <span><input type="submit" value="Показать" class="btn btn-default" /></span><br />
+    <span><input type="submit" value="Показать" class="btn btn-default" /></span><br /><br />
 }
-@using (Ajax.BeginForm("ShowMessagesByPerson", "Message", new AjaxOptions { UpdateTargetId = "forAjax" }, htmlAttributes: new { id = "listsAjax", @class = "form-inline" }))
+@using (Ajax.BeginForm("ShowMessagesByPerson", "Message", new AjaxOptions { UpdateTargetId = "forAjax" }, htmlAttributes: new { id = "listsAjax1", @class = "form-inline" }))
 {
     <span>Найти сообщения, где </span>
     <select id="pRole" name="pRole" class="form-control">
@@ -25,9 +25,9 @@
         <option value="Sender_id">Отправитель</option>
     </select>
     @Html.DropDownList("PersonId", (SelectList)ViewData["VBPerson"], new { @class = "form-control" })
-    <span><input type="submit" value="Показать" class="btn btn-default" /></span><br />
+    <span><input type="submit" value="Показать" class="btn btn-default" /></span><br /><br />
 }
-@using (Ajax.BeginForm("ShowMessagesByTag", "Message", new AjaxOptions { UpdateTargetId = "forAjax" }, htmlAttributes: new { id = "listsAjax", @class = "form-inline" }))
+@using (Ajax.BeginForm("ShowMessagesByTag", "Message", new AjaxOptions { UpdateTargetId = "forAjax" }, htmlAttributes: new { id = "listsAjax2", @class = "form-inline" }))
 {
     <span>Найти сообщения, где есть тэг: </span>
     @Html.DropDownList("TagId", (SelectList)ViewData["VBTag"], new { @class = "form-control" })

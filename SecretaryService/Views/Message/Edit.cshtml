@@ -51,8 +51,8 @@
         @Html.LabelFor(model => model.Tags, htmlAttributes: new { @class = "control-label col-md-2" })
         <div class="col-md-10">
             @Html.ListBox("Tags", (MultiSelectList)ViewBag.VBTags, new { @class = "form-control", size = ((MultiSelectList)ViewBag.VBTags).Count() < 10 ? ((MultiSelectList)ViewBag.VBTags).Count() : 10 })
-
             @Html.ValidationMessageFor(model => model.Tags, "", new { @class = "text-danger" })
+            <label style="font-size:12px">Для множественного выделения зажмите CTRL</label>
         </div>
     </div>
 

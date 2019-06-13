@@ -75,8 +75,10 @@ namespace SecretaryService.Models
         public List<Message> GetMessagesInDateInterval(DateTime dateStart, DateTime dateEnd)
         {
             List<Message> messages = new List<Message>();
-            using (SqlCommand command = new SqlCommand("GetMessageInDateInterval", connection) { CommandType = CommandType.StoredProcedure })
+            using (SqlCommand command = new SqlCommand("GetMessagesInDateInterval", connection) { CommandType = CommandType.StoredProcedure })
             {
+                //command.Parameters.Add(new SqlParameter("@dateStart", SqlDbType.DateTime2)).Value=dateStart;
+                //command.Parameters.Add(new SqlParameter("@dateEnd", SqlDbType.DateTime2)).Value = dateEnd;
                 command.Parameters.Add(new SqlParameter("@dateStart", dateStart));
                 command.Parameters.Add(new SqlParameter("@dateEnd", dateEnd));
                 connection.Open();

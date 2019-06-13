@@ -127,15 +127,15 @@ namespace SecretaryService.Controllers
             try
             {
                 if (dateStart == null || dateEnd == null)
-                    return RedirectToAction("Index");
+                    return Redirect("Message");
                 List<Message> messages = new List<Message>();
 
                 messages = messageRepository.GetMessagesInDateInterval(dateStart.Value, dateEnd.Value);
                 return PartialView("TableView", messages);
             }
-            catch (Exception)
+            catch (Exception x)
             {
-                return RedirectToAction("Index");
+                return Redirect("Message");
             }
             
         }
@@ -144,13 +144,14 @@ namespace SecretaryService.Controllers
         {
             try
             {
+                pRole = null;
                 List<Message> messages = new List<Message>();
                 messages = messageRepository.GetMessagesOfPerson(pRole, PersonId);
                 return PartialView("TableView", messages);
             }
-            catch (Exception)
+            catch (Exception x)
             {
-                return RedirectToAction("Index");
+                return Redirect("Message");
             }
             
         }
@@ -163,9 +164,9 @@ namespace SecretaryService.Controllers
                 messages = messageRepository.GetMessagesByTag(TagId);
                 return PartialView("TableView", messages);
             }
-            catch (Exception)
+            catch (Exception x)
             {
-                return RedirectToAction("Index");
+                return Redirect("Message");
             }
             
         }
