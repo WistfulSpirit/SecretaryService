@@ -124,23 +124,50 @@ namespace SecretaryService.Controllers
 
         public ActionResult ShowMessagesByDate(DateTime? dateStart, DateTime? dateEnd)
         {
-            List<Message> messages = new List<Message>();
-            messages = messageRepository.GetMessagesInDateInterval(dateStart.Value, dateEnd.Value);
-            return PartialView("TableView", messages);
+            try
+            {
+                if (dateStart == null || dateEnd == null)
+                    return RedirectToAction("Index");
+                List<Message> messages = new List<Message>();
+
+                messages = messageRepository.GetMessagesInDateInterval(dateStart.Value, dateEnd.Value);
+                return PartialView("TableView", messages);
+            }
+            catch (Exception)
+            {
+                return RedirectToAction("Index");
+            }
+            
         }
 
         public ActionResult ShowMessagesByPerson(string pRole, int PersonId)
         {
-            List<Message> messages = new List<Message>();
-            messages = messageRepository.GetMessagesOfPerson(pRole, PersonId);
-            return PartialView("TableView", messages);
+            try
+            {
+                List<Message> messages = new List<Message>();
+                messages = messageRepository.GetMessagesOfPerson(pRole, PersonId);
+                return PartialView("TableView", messages);
+            }
+            catch (Exception)
+            {
+                return RedirectToAction("Index");
+            }
+            
         }
 
         public ActionResult ShowMessagesByTag(int TagId)
         {
-            List<Message> messages = new List<Message>();
-            messages = messageRepository.GetMessagesByTag(TagId);
-            return PartialView("TableView", messages);
+            try
+            {
+                List<Message> messages = new List<Message>();
+                messages = messageRepository.GetMessagesByTag(TagId);
+                return PartialView("TableView", messages);
+            }
+            catch (Exception)
+            {
+                return RedirectToAction("Index");
+            }
+            
         }
 
 
