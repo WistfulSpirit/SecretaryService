@@ -1,0 +1,121 @@
+﻿@model IEnumerable<SecretaryService.Models.Message>
+@Scripts.Render("~/scripts/jquery-3.3.1.js")
+@Scripts.Render("~/scripts/jquery.unobtrusive-ajax.js")
+@{
+    ViewBag.Title = "View";
+}
+
+<h2>View</h2>
+
+<p>
+    @Html.ActionLink("Create New", "Create")
+</p>
+@using (Ajax.BeginForm("ShowMessagesByDate", "Message", new AjaxOptions { UpdateTargetId = "forAjax" }, htmlAttributes: new { id = "listsAjax", @class = "form-inline" }))
+{
+    <span>Найти сообщения, за период</span>
+    <span> от </span><input id="dateStart" name="dateStart" type="date" class="form-control" />
+    <span> до </span><input id="dateEnd" name="dateEnd" type="date" class="form-control" />
+    <span><input type="submit" value="Показать" class="btn btn-default" /></span><br />
+}
+@using (Ajax.BeginForm("ShowMessagesByPerson", "Message", new AjaxOptions { UpdateTargetId = "forAjax" }, htmlAttributes: new { id = "listsAjax", @class = "form-inline" }))
+{
+    <span>Найти сообщения, где </span>
+    <select id="pRole" name="pRole" class="form-control">
+        <option value="Adressee_id">Адресат</option>
+        <option value="Sender_id">Отправитель</option>
+    </select>
+    @Html.DropDownList("PersonId", (SelectList)ViewData["VBPerson"], new { @class = "form-control" })
+    <span><input type="submit" value="Показать" class="btn btn-default" /></span><br />
+}
+@using (Ajax.BeginForm("ShowMessagesByTag", "Message", new AjaxOptions { UpdateTargetId = "forAjax" }, htmlAttributes: new { id = "listsAjax", @class = "form-inline" }))
+{
+    <span>Найти сообщения, где есть тэг: </span>
+    @Html.DropDownList("TagId", (SelectList)ViewData["VBTag"], new { @class = "form-control" })
+    <span><input type="submit" value="Показать" class="btn btn-default" /></span><br /><br />
+}
+
+<table class="table" id="forAjax">
+    <tr>
+        <th>
+            @Html.DisplayNameFor(model => model.Id)
+        </th> 
+        <th>
+            @Html.DisplayNameFor(model => model.Sender)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.Adressee)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.Title)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.Registry_Date)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.Content)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.Tags)
+        </th>
+        <th></th>
+    </tr>
+
+    @foreach (var item in Model)
+    {
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.Id)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Sender.Name)<span>(@Html.DisplayFor(modelItem => item.Sender.Email))</span>
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Adressee.Name)<span>(@Html.DisplayFor(modelItem => item.Adressee.Email))</span>
+            </td>
+
+            <td>
+                @Html.DisplayFor(modelItem => item.Title)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Registry_Date)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Content)
+            </td>
+            <td>
+                @if (item.Tags != null)
+                {
+                    foreach (var tag in item.Tags)
+                    {
+                        <span>@Html.DisplayFor(modelItem => tag.Value) </span>
+                    }
+                }
+            </td>
+            <td>
+                @Html.ActionLink("Edit", "Edit", new { id = item.Id }) |
+                @Html.ActionLink("Details", "Details", new { id = item.Id }) |
+                @Html.ActionLink("Delete", "Delete", new { id = item.Id })
+            </td>
+        </tr>
+    }
+    @if (Model.Count() == 0)
+    {
+        <tr>
+            <td colspan="5" style="text-align:center">Нет результатов</td>
+            <td></td>
+        </tr>
+    }
+</table>
+<script type="text/javascript">
+
+    $.getJSON('/foo/index', function (result) {
+        var ddl = $('#foo');
+        ddl.empty();
+        $(result).each(function () {
+            $(document.createElement('option'))
+                .attr('value', this.Id)
+                .text(this.Value)
+                .appendTo(ddl);
+        });
+    });
+</script>

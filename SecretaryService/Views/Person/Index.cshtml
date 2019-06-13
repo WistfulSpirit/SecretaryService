@@ -1,0 +1,167 @@
+﻿
+<div id="tableBlock"></div>
+<div id="editBlock">
+    <p><b>Редактирование пользователя</b></p>
+    <input type="hidden" id="editId" />
+    <table class="table">
+        <tr><td><label>Имя: </label></td><td><input type="text" id="editName" class="form-control" /></td></tr>
+        <tr><td><label>Email: </label></td><td><input type="text" id="editEmail" class="form-control" /></td></tr>
+    </table>
+    <button id="editPerson">Сохранить</button>
+</div>
+<div id="createBlock">
+    <p><b>Добавление пользователя</b></p>
+    <table class="table">
+        <tr><td><label>Название: </label></td><td><input type="text" id="addName" class="form-control" /></td></tr>
+        <tr><td><label>Email: </label></td><td><input type="text" id="addEmail" class="form-control" /></td></tr>
+    </table>
+    <button id="addPerson">Сохранить</button>
+</div>
+@section scripts
+{
+    <script type="text/javascript">
+        $(document).ready(function () {
+
+            GetAllPersons();
+
+            $("#editPerson").click(function (event) {
+                event.preventDefault();
+                editPerson();
+            });
+
+            $("#addPerson").click(function (event) {
+                event.preventDefault();
+                addPerson();
+            });
+
+        });
+        // Получение всех пользователей по ajax-запросу
+        function GetAllPersons() {
+
+            $("#createBlock").css('display', 'block');
+            $("#editBlock").css('display', 'none');
+            $.ajax({
+                url: '/api/Person/',
+                type: 'GET',
+                dataType: 'json',
+                success: function (data) {
+                    WriteResponse(data);
+                },
+                error: function (x, y, z) {
+                    alert(x + '\n' + y + '\n' + z);
+                }
+            });
+        }
+        // Добавление нового пользователя
+        function addPerson() {
+            // получаем значения для добавляемого пользователя
+            var person = {
+                Name: $('#addName').val(),
+                Email: $('#addEmail').val(),
+            };
+
+            $.ajax({
+                url: '/api/Person',
+                type: 'POST',
+                data: JSON.stringify(person),
+                contentType: "application/json;charset=utf-8",
+                success: function (data) {
+                    GetAllPersons();
+                },
+                error: function (x, y, z) {
+                    alert(x + '\n' + y + '\n' + z);
+                }
+            });
+        }
+        // Удаление пользователя
+        function DeletePerson(id) {
+
+            $.ajax({
+                url: '/api/Person/' + id,
+                type: 'DELETE',
+                contentType: "application/json;charset=utf-8",
+                success: function (data) {
+                    GetAllPersons();
+                },
+                error: function (x, y, z) {
+                    alert(x + '\n' + y + '\n' + z);
+                }
+            });
+        }
+        // редактирование пользователя
+        function editPerson() {
+            var id = $('#editId').val()
+            // получаем новые значения для редактируемого пользователя
+            var person = {
+                Id: $('#editId').val(),
+                Name: $('#editName').val(),
+                Email: $('#editEmail').val()
+            };
+            $.ajax({
+                url: '/api/Person/' + id,
+                type: 'PUT',
+                data: JSON.stringify(person),
+                contentType: "application/json;charset=utf-8",
+                success: function (data) {
+                    GetAllPersons();
+                },
+                error: function (x, y, z) {
+                    alert(x + '\n' + y + '\n' + z);
+                }
+            });
+        }
+        // вывод полученных данных на экран
+        function WriteResponse(persons) {
+            var strResult = "<table class='table'><th>Id</th><th>Имя</th><th>Email</th>";
+            $.each(persons, function (index, person) {
+                strResult += "<tr><td>" + person.Id + "</td><td> " + person.Name + "</td><td>" +
+                    person.Email +
+                    "</td><td><a id='editItem' data-item='" + person.Id + "' onclick='EditItem(this);' >Редактировать</a></td>" +
+                    "<td><a id='delItem' data-item='" + person.Id + "' onclick='DeleteItem(this);' >Удалить</a></td></tr>";
+            });
+            strResult += "</table>";
+            $("#tableBlock").html(strResult);
+
+        }
+        // обработчик удаления
+        function DeleteItem(el) {
+            // получаем id удаляемого объекта
+            var id = $(el).attr('data-item');
+            DeletePerson(id);
+        }
+        // обработчик редактирования
+        function EditItem(el) {
+            // получаем id редактируемого объекта
+            var id = $(el).attr('data-item');
+            GetPerson(id);
+        }
+        // вывод данных редактируемоuj пользователя в поля для редактирования
+        function ShowPerson(person) {
+            if (person != null) {
+                $("#createBlock").css('display', 'none');
+                $("#editBlock").css('display', 'block');
+                $("#editId").val(person.Id);
+                $("#editName").val(person.Name);
+                $("#editEmail").val(person.Email);
+            }
+            else {
+                alert("Такого пользователя не существует");
+            }
+        }
+        // запрос пользователя на редактирование
+        function GetPerson(id) {
+            $.ajax({
+                url: '/api/Person/' + id,
+                type: 'GET',
+                dataType: 'json',
+                success: function (data) {
+                    ShowPerson(data);
+                },
+                error: function (x, y, z) {
+                    alert(x + '\n' + y + '\n' + z);
+                }
+            });
+        }
+    </script>
+}
+

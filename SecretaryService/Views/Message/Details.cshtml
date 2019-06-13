@@ -1,0 +1,60 @@
+﻿@model SecretaryService.Models.Message
+
+<div>
+    <h4>Message</h4>
+    <hr />
+    <dl class="dl-horizontal">
+        <dt>
+            @Html.DisplayNameFor(model => model.Title)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.Title)
+        </dd>
+        
+        <dt>
+            @Html.DisplayNameFor(model => model.Sender)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.Sender.Name) <span>(@Html.DisplayFor(model => model.Sender.Email))</span>
+        </dd>
+        
+        <dt>
+            @Html.DisplayNameFor(model => model.Adressee)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.Adressee.Name) <span>(@Html.DisplayFor(model => model.Adressee.Email))</span>
+        </dd>
+        
+        <dt>
+            @Html.DisplayNameFor(model => model.Registry_Date)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.Registry_Date)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.Content)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.Content)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.Tags)
+        </dt>
+        <dd>
+                @if (Model.Tags != null)
+                {
+                    foreach (var tag in Model.Tags)
+                    {
+                        <span>@Html.DisplayFor(modelItem => tag.Value) </span>
+                    }
+                }
+        </dd>
+
+    </dl>
+</div>
+<p>
+    @Html.ActionLink("Edit", "Edit", new { id = Model.Id }) |
+    @Html.ActionLink("Back to List", "Index")
+</p>

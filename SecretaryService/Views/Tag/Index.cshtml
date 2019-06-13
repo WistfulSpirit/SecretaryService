@@ -1,0 +1,155 @@
+﻿
+<div id="tableBlock"></div>
+<div id="editBlock">
+    <p><b>Редактирование пользователя</b></p>
+    <input type="hidden" id="editId" />
+    <table class="table">
+        <tr><td><label>Название: </label></td><td><input type="text" id="editValue" class="form-control" /></td></tr>
+    </table>
+    <button id="editTag">Сохранить</button>
+</div>
+<div id="createBlock">
+    <p><b>Добавление пользователя</b></p>
+    <table class="table">
+        <tr><td><label>Название: </label></td><td><input type="text" id="addValue" class="form-control" /></td></tr>
+    </table>
+    <button id="addTag">Сохранить</button>
+</div>
+@section scripts
+{
+    <script type="text/javascript">
+        $(document).ready(function () {
+
+            GetAllTags();
+
+            $("#editTag").click(function (event) {
+                event.preventDefault();
+                editTag();
+            });
+
+            $("#addTag").click(function (event) {
+                event.preventDefault();
+                addTag();
+            });
+
+        });
+        function GetAllTags() {
+
+            $("#createBlock").css('display', 'block');
+            $("#editBlock").css('display', 'none');
+            $.ajax({
+                url: '/api/Tag/',
+                type: 'GET',
+                dataType: 'json',
+                success: function (data) {
+                    WriteResponse(data);
+                },
+                error: function (x, y, z) {
+                    alert(x + '\n' + y + '\n' + z);
+                }
+            });
+        }
+        function addTag() {
+            var tag = {
+                Value: $('#addValue').val(),
+                Email: $('#addEmail').val(),
+            };
+
+            $.ajax({
+                url: '/api/Tag',
+                type: 'POST',
+                data: JSON.stringify(tag),
+                contentType: "application/json;charset=utf-8",
+                success: function (data) {
+                    GetAllTags();
+                },
+                error: function (x, y, z) {
+                    alert(x + '\n' + y + '\n' + z);
+                }
+            });
+        }
+        function DeleteTag(id) {
+
+            $.ajax({
+                url: '/api/Tag/' + id,
+                type: 'DELETE',
+                contentType: "application/json;charset=utf-8",
+                success: function (data) {
+                    GetAllTags();
+                },
+                error: function (x, y, z) {
+                    alert(x + '\n' + y + '\n' + z);
+                }
+            });
+        }
+        function editTag() {
+            var id = $('#editId').val()
+            var tag = {
+                Id: $('#editId').val(),
+                Value: $('#editValue').val(),
+                Email: $('#editEmail').val()
+            };
+            $.ajax({
+                url: '/api/Tag/' + id,
+                type: 'PUT',
+                data: JSON.stringify(tag),
+                contentType: "application/json;charset=utf-8",
+                success: function (data) {
+                    GetAllTags();
+                },
+                error: function (x, y, z) {
+                    alert(x + '\n' + y + '\n' + z);
+                }
+            });
+        }
+        // вывод полученных данных на экран
+        function WriteResponse(tags) {
+            var strResult = "<table class='table'><th>Id</th><th>Название</th>";
+            $.each(tags, function (index, tag) {
+                strResult += "<tr><td>" + tag.Id + "</td><td> " + tag.Value +
+                    "</td><td><a id='editItem' data-item='" + tag.Id + "' onclick='EditItem(this);' >Редактировать</a></td>" +
+                    "<td><a id='delItem' data-item='" + tag.Id + "' onclick='DeleteItem(this);' >Удалить</a></td></tr>";
+            });
+            strResult += "</table>";
+            $("#tableBlock").html(strResult);
+
+        }
+        // обработчик удаления
+        function DeleteItem(el) {
+            // получаем id удаляемого объекта
+            var id = $(el).attr('data-item');
+            DeleteTag(id);
+        }
+        // обработчик редактирования
+        function EditItem(el) {
+            // получаем id редактируемого объекта
+            var id = $(el).attr('data-item');
+            GetTag(id);
+        }
+        function ShowTag(tag) {
+            if (tag != null) {
+                $("#createBlock").css('display', 'none');
+                $("#editBlock").css('display', 'block');
+                $("#editId").val(tag.Id);
+                $("#editValue").val(tag.Value);
+            }
+            else {
+                alert("Такого тэга не существует");
+            }
+        }
+        function GetTag(id) {
+            $.ajax({
+                url: '/api/Tag/' + id,
+                type: 'GET',
+                dataType: 'json',
+                success: function (data) {
+                    ShowTag(data);
+                },
+                error: function (x, y, z) {
+                    alert(x + '\n' + y + '\n' + z);
+                }
+            });
+        }
+    </script>
+}
+
