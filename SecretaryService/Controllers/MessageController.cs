@@ -144,7 +144,6 @@ namespace SecretaryService.Controllers
         {
             try
             {
-                pRole = null;
                 List<Message> messages = new List<Message>();
                 messages = messageRepository.GetMessagesOfPerson(pRole, PersonId);
                 return PartialView("TableView", messages);
